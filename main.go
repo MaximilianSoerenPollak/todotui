@@ -15,7 +15,7 @@ type model struct {
 
 func initialModel() model {
 	return model{
-		// Our to-do list is a grocery list
+        // Our initial tasklist. This might need to be empty / have an explenation what to do?
 		choices: []string{"First TODO", "Second Task", "Third Task"},
 
 		// A map which indicates which choices are selected. We're using
@@ -73,7 +73,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	// The header
-	s := "What should we buy at the market?\n\n"
+	s := "What task do you want to mark as done?\n\n"
 
 	// Iterate over our choices
 	for i, choice := range m.choices {
