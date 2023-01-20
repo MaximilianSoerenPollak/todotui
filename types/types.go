@@ -1,12 +1,23 @@
 package types
 
 type Task struct {
-	title  string
-	isDone bool
+	Title  string
+	IsDone bool
 }
 
 type TaskGroup struct {
-	title      string
-	tasks      []Task
-	taskGroups []TaskGroup
+	GroupTitle       string
+	GroupDescription string
+	Tasks            []Task
+	TaskGroups       []TaskGroup
 }
+
+type DbDataT struct {
+	TaskGroups []TaskGroup
+}
+
+func (g TaskGroup) FilterValue() string { return g.GroupTitle }
+func (g TaskGroup) Title() string       { return g.GroupTitle }
+func (g TaskGroup) Description() string { return g.GroupDescription }
+
+func (t Task) FilterValue() string { return t.Title }
