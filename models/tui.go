@@ -1,7 +1,6 @@
 package models
 
 import (
-
 	"fmt"
 	"strings"
 
@@ -14,7 +13,6 @@ import (
 )
 
 type taskGroupsModel struct {
-
 	list        list.Model
 	inputs      []textinput.Model
 	state       int // 0 -> List Mode | 1 -> Input Mode
@@ -78,6 +76,8 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					items := m.list.Items()
 					m.state = 0
 					m.list.SetItems(append(items, types.TaskGroup{GroupTitle: title, GroupDescription: description}))
+					m.inputs[0].SetValue("")
+					m.inputs[1].SetValue("")
 					return m, nil
 				}
 				if s == "up" || s == "shift+tab" {
@@ -108,18 +108,16 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, tea.Batch(cmds...)
 			}
 
+		}
 	}
-    }
 	if m.state == 1 {
 		cmd := m.updateInputs(msg)
 		return m, cmd
 	}
 
-
 	m.list, cmd = m.list.Update(msg)
-    return m, cmd
+	return m, cmd
 }
-
 
 func (m *taskGroupsModel) updateInputs(msg tea.Msg) tea.Cmd {
 	cmds := make([]tea.Cmd, len(m.inputs))
