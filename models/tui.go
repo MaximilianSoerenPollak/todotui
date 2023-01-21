@@ -57,11 +57,13 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				index := m.list.Index()
 				m.list.RemoveItem(index)
 				return m, nil
-            case "e":
-                m.state = 1
-				// selectedItem := m.list.Items()[m.list.Index()]
-                cmd := m.updateInputs(msg)
-                return m, cmd 
+            // TODO: Add an edit button. This is not working so far, have no idea hwo to get input + prepopulate it.
+            // ------ 
+            // case "e":
+            //     m.state = 1
+            //     cmd := m.updateInputs(msg)
+            //     return m, cmd 
+            // ------ 
 			case "enter":
 				parentTaskGroup, ok := m.list.SelectedItem().(types.TaskGroup)
 				if ok {
@@ -92,7 +94,8 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.state = 0
 					m.list.SetItems(append(items, types.TaskGroup{GroupTitle: title, GroupDescription: description}))
 					m.inputs[0].SetValue("")
-					m.inputs[1].SetValue("")
+					m.inputs[1].SetValue("") 
+                    m.inputs[0].Focus()
 					return m, nil
 				}
 				if s == "up" || s == "shift+tab" {
