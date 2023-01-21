@@ -53,7 +53,13 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if m.isFiltering {
 					m.isFiltering = false
 				}
+			case "enter":
+				parentTaskGroup, ok := m.list.SelectedItem().(types.TaskGroup)
+				if ok {
+					return initiateTasksListModel(parentTaskGroup, m), nil
+				}
 			}
+
 		case 1:
 			switch keypress := msg.String(); keypress {
 			case "ctrl+r":
@@ -191,9 +197,9 @@ func InitiateTaskGroupsList() taskGroupsModel {
 }
 
 // TODOs
-// Delete TaskGroups
-// Edit TaskGroups
-// Cancel Adding New TaskGroup
-// Switch To TasksList for the group
-// Refactor Update Method
-// Update Delegate and add Hints for all keybinds
+// [] Delete TaskGroups
+// [] Edit TaskGroups
+// [] Cancel Adding New TaskGroup
+// [x] Switch To TasksList for the group
+// [] Refactor Update Method
+// [] Update Delegate and add Hints for all keybinds
