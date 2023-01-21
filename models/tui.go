@@ -197,3 +197,4 @@ func InitiateTaskGroupsList() taskGroupsModel {
 // Cancel Adding New TaskGroup
 // Switch To TasksList for the group
 // Refactor Update Method
+// Update Delegate and add Hints for all keybinds
