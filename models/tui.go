@@ -27,15 +27,6 @@ func (m taskGroupsModel) Init() tea.Cmd {
 	return nil
 }
 
-func (m taskGroupsModel) updateInputs(msg tea.Msg) tea.Cmd {
-	cmds := make([]tea.Cmd, len(m.textInputs))
-
-	for i := range m.textInputs {
-		m.textInputs[i], cmds[i] = m.textInputs[i].Update(msg)
-	}
-	return tea.Batch(cmds...)
-}
-
 func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
@@ -117,16 +108,17 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, tea.Batch(cmds...)
 			}
 
-		}
-        return m, cmd
 	}
-
+    }
 	if m.state == 1 {
 		cmd := m.updateInputs(msg)
 		return m, cmd
 	}
 
-	// m.list, cmd = m.list.Update(msg)
+
+	m.list, cmd = m.list.Update(msg)
+    return m, cmd
+}
 
 
 func (m *taskGroupsModel) updateInputs(msg tea.Msg) tea.Cmd {
