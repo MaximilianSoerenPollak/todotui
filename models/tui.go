@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -11,9 +9,10 @@ import (
 )
 
 type taskGroupsModel struct {
-	list      list.Model
-	textInput textinput.Model
-	state     int
+	list        list.Model
+	textInput   textinput.Model
+	state       int
+	isFiltering bool
 }
 
 func (m taskGroupsModel) Init() tea.Cmd {
@@ -31,9 +30,17 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case 0:
 			switch keypress := msg.String(); keypress {
 			case "a":
-				m.state = 1
-				m.textInput, cmd = m.textInput.Update(msg)
-				return m, cmd
+				if !m.isFiltering {
+					m.state = 1
+					m.textInput, cmd = m.textInput.Update(msg)
+					return m, cmd
+				}
+			case "/":
+				m.isFiltering = true
+			case "esc":
+				if m.isFiltering {
+					m.isFiltering = false
+				}
 			}
 		case 1:
 			switch keypress := msg.String(); keypress {
@@ -64,6 +71,7 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m taskGroupsModel) View() string {
 
 	if m.state == 0 {
+
 		return m.list.View()
 	}
 	return m.textInput.View()
@@ -77,7 +85,6 @@ func InitiateTaskGroupsList() taskGroupsModel {
 	for _, j := range db.MemData.TaskGroups {
 		items = append(items, j)
 	}
-	fmt.Println(items)
 	ti := textinput.New()
 	ti.Placeholder = "Pikachu"
 	ti.Focus()
