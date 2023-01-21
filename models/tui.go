@@ -29,7 +29,7 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		h, v := docStyle.GetFrameSize()
+		h, v := styles.DocStyle.GetFrameSize()
 		m.list.SetSize(msg.Width-h, msg.Height-v)
 	case tea.KeyMsg:
 		switch keyPress := msg.String(); keyPress {
