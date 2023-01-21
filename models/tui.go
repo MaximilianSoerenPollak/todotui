@@ -62,6 +62,11 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				// selectedItem := m.list.Items()[m.list.Index()]
                 cmd := m.updateInputs(msg)
                 return m, cmd 
+			case "enter":
+				parentTaskGroup, ok := m.list.SelectedItem().(types.TaskGroup)
+				if ok {
+					return initiateTasksListModel(parentTaskGroup, m), nil
+				}
 			}
 
 		case 1:
@@ -86,6 +91,8 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					items := m.list.Items()
 					m.state = 0
 					m.list.SetItems(append(items, types.TaskGroup{GroupTitle: title, GroupDescription: description}))
+					m.inputs[0].SetValue("")
+					m.inputs[1].SetValue("")
 					return m, nil
 				}
 				if s == "up" || s == "shift+tab" {
@@ -199,9 +206,9 @@ func InitiateTaskGroupsList() taskGroupsModel {
 }
 
 // TODOs
-// Delete TaskGroups
-// Edit TaskGroups
-// Cancel Adding New TaskGroup
-// Switch To TasksList for the group
-// Refactor Update Method
-// Update Delegate and add Hints for all keybinds
+// [] Delete TaskGroups
+// [] Edit TaskGroups
+// [] Cancel Adding New TaskGroup
+// [x] Switch To TasksList for the group
+// [] Refactor Update Method
+// [] Update Delegate and add Hints for all keybinds

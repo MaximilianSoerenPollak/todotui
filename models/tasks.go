@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/maximiliansoerenpollak/todotui/styles"
@@ -29,11 +27,12 @@ func (m tasksListModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch keypress := msg.String(); keypress {
 		case "ctrl+c":
 			return m, tea.Quit
-
+		case "home":
+			return m.parentModel, nil
 		case "enter":
 			i, ok := m.list.SelectedItem().(types.Task)
 			if ok {
-				m.choice = i.Title
+				m.choice = i.TaskTitle
 			}
 			return m, tea.Quit
 		}
@@ -42,12 +41,15 @@ func (m tasksListModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m tasksListModel) View() string {
-	if m.choice != "" {
-		return styles.QuitTextStyle.Render(fmt.Sprintf("Selected: %s", m.choice))
-	}
-	return "\n" + m.list.View()
+	return styles.DocStyle.Render(m.list.View())
 }
 
-func TasksListModel(parentTaskGroup types.TaskGroup) tasksListModel {
-	return tasksListModel{parentTaskGroup: parentTaskGroup}
+func initiateTasksListModel(parentTaskGroup types.TaskGroup, parentModel tea.Model) tasksListModel {
+	m := tasksListModel{parentTaskGroup: parentTaskGroup, parentModel: parentModel}
+	items := []list.Item{}
+	for _, j := range parentTaskGroup.Tasks {
+		items = append(items, j)
+	}
+	m.list = list.New(items, list.NewDefaultDelegate(), 0, 0)
+	return m
 }
