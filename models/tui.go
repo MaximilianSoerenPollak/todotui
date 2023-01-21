@@ -57,7 +57,13 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				index := m.list.Index()
 				m.list.RemoveItem(index)
 				return m, nil
+            case "e":
+                m.state = 1
+				// selectedItem := m.list.Items()[m.list.Index()]
+                cmd := m.updateInputs(msg)
+                return m, cmd 
 			}
+
 		case 1:
 			switch keypress := msg.String(); keypress {
 			case "ctrl+r":
