@@ -1,6 +1,7 @@
 package models
 
 import (
+
 	"fmt"
 	"strings"
 
@@ -13,6 +14,7 @@ import (
 )
 
 type taskGroupsModel struct {
+
 	list        list.Model
 	inputs      []textinput.Model
 	state       int // 0 -> List Mode | 1 -> Input Mode
@@ -23,6 +25,15 @@ type taskGroupsModel struct {
 
 func (m taskGroupsModel) Init() tea.Cmd {
 	return nil
+}
+
+func (m taskGroupsModel) updateInputs(msg tea.Msg) tea.Cmd {
+	cmds := make([]tea.Cmd, len(m.textInputs))
+
+	for i := range m.textInputs {
+		m.textInputs[i], cmds[i] = m.textInputs[i].Update(msg)
+	}
+	return tea.Batch(cmds...)
 }
 
 func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -107,6 +118,7 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		}
+        return m, cmd
 	}
 
 	if m.state == 1 {
@@ -114,10 +126,8 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, cmd
 	}
 
-	m.list, cmd = m.list.Update(msg)
+	// m.list, cmd = m.list.Update(msg)
 
-	return m, cmd
-}
 
 func (m *taskGroupsModel) updateInputs(msg tea.Msg) tea.Cmd {
 	cmds := make([]tea.Cmd, len(m.inputs))
@@ -129,7 +139,6 @@ func (m *taskGroupsModel) updateInputs(msg tea.Msg) tea.Cmd {
 }
 
 func (m taskGroupsModel) View() string {
-
 	if m.state == 0 {
 
 		return m.list.View()
