@@ -10,6 +10,7 @@ type Task struct {
 }
 
 type TaskGroup struct {
+	GroupId          string
 	GroupTitle       string
 	GroupDescription string
 	Tasks            []Task
