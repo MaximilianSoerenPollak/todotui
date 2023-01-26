@@ -11,6 +11,7 @@ require (
 
 require (
 	github.com/aymanbagabas/go-osc52 v1.0.3 // indirect
+	github.com/buger/goterm v1.0.4
 	github.com/charmbracelet/bubbles v0.14.0
 	github.com/charmbracelet/lipgloss v0.6.0
 	github.com/containerd/console v1.0.3 // indirect
