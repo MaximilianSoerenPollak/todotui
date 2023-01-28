@@ -74,8 +74,8 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 						m.state = 2
 					}
 					cmd := m.updateInputs(msg)
-					m.editInputs[0].SetValue("")
-					m.editInputs[1].SetValue("")
+					m.editInputs[0].SetValue(selected.GroupTitle)
+					m.editInputs[1].SetValue(selected.GroupDescription)
 					m.editInputs[0].Focus()
 					m.editFocusIndex = 0
 					return m, cmd
