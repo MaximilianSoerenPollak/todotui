@@ -8,6 +8,7 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/google/uuid"
+
 	"github.com/maximiliansoerenpollak/todotui/db"
 	"github.com/maximiliansoerenpollak/todotui/styles"
 	"github.com/maximiliansoerenpollak/todotui/types"
@@ -237,14 +238,14 @@ func (m *taskGroupsModel) updateEditInputs(msg tea.Msg) tea.Cmd {
 }
 
 func (m taskGroupsModel) View() string {
-
 	var toRender string
 	var title string
 
 	switch m.state {
 
 	case 0:
-		title = styles.Title(m.list.Width()).Render("JustDoIt")
+		_, v := styles.DocStyle.GetFrameSize()
+		title = styles.Title(m.list.Width() - v).Render("JustDoIt")
 		toRender = m.list.View()
 	case 1:
 		var b strings.Builder
@@ -291,7 +292,6 @@ func (m taskGroupsModel) View() string {
 }
 
 func InitiateTaskGroupsList() taskGroupsModel {
-
 	items := []list.Item{}
 	for _, j := range db.MemData.TaskGroups {
 		items = append(items, j)
