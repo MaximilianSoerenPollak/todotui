@@ -9,5 +9,5 @@ var (
 )
 
 func Title(width int) lipgloss.Style {
-	return lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#FAFAFA")).Background(lipgloss.Color("#7D56F4")).Align(lipgloss.Center).Padding(1, 0).MarginTop(2).Width(width)
+	return lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#FAFAFA")).Background(lipgloss.Color("#7D56F4")).Align(lipgloss.Center).Padding(1, 0).Width(width)
 }
