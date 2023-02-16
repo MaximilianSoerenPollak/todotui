@@ -33,7 +33,7 @@ func (m taskGroupsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		h, v := styles.DocStyle.GetFrameSize()
-		m.list.SetSize(msg.Width-h, msg.Height-v)
+		m.list.SetSize(msg.Width-h, msg.Height-v-6)
 	case tea.KeyMsg:
 		switch keyPress := msg.String(); keyPress {
 		case "ctrl+c":
@@ -90,11 +90,34 @@ func (m *taskGroupsModel) updateEditInputs(msg tea.Msg) tea.Cmd {
 }
 
 func (m taskGroupsModel) View() string {
-	if m.state == 0 {
-		return m.list.View()
-	}
+	var toRender string
+	var title string
 
-	if m.state == 2 {
+	switch m.state {
+
+	case 0:
+		_, v := styles.DocStyle.GetFrameSize()
+		title = styles.Title(m.list.Width() - v).Render("JustDoIt")
+		toRender = m.list.View()
+	case 1:
+		var b strings.Builder
+		for i := range m.inputs {
+			b.WriteString(m.inputs[i].View())
+			if i < len(m.inputs)-1 {
+				b.WriteRune('\n')
+			}
+		}
+		button := &styles.TiBlurredButton
+		if m.focusIndex == len(m.inputs) {
+			button = &styles.TiFocusedButton
+		}
+		fmt.Fprintf(&b, "\n\n%s\n\n", *button)
+		b.WriteString(styles.TiHelpStyle.Render("cursor mode is "))
+		b.WriteString(styles.TiCursorModeHelpStyle.Render(m.cursorMode.String()))
+		b.WriteString(styles.TiHelpStyle.Render(" (ctrl+r to change style)"))
+		title = styles.Title(m.list.Width()).Render("Add New TaskGroup")
+		toRender = b.String()
+	case 2:
 		var b strings.Builder
 
 		for i := range m.editInputs {
@@ -105,7 +128,7 @@ func (m taskGroupsModel) View() string {
 		}
 
 		button := &styles.TiBlurredButton
-		if m.focusIndex == len(m.editInputs) {
+		if m.editFocusIndex == len(m.editInputs) {
 			button = &styles.TiFocusedButton
 		}
 		fmt.Fprintf(&b, "\n\n%s\n\n", *button)
@@ -113,31 +136,11 @@ func (m taskGroupsModel) View() string {
 		b.WriteString(styles.TiHelpStyle.Render("cursor mode is "))
 		b.WriteString(styles.TiCursorModeHelpStyle.Render(m.cursorMode.String()))
 		b.WriteString(styles.TiHelpStyle.Render(" (ctrl+r to change style)"))
-
-		return b.String()
+		title = styles.Title(m.list.Width()).Render("Editing Task Group: " + m.selected.GroupTitle)
+		toRender = b.String()
 	}
 
-	var b strings.Builder
-
-	for i := range m.inputs {
-		b.WriteString(m.inputs[i].View())
-		if i < len(m.inputs)-1 {
-			b.WriteRune('\n')
-		}
-	}
-
-	button := &styles.TiBlurredButton
-	if m.focusIndex == len(m.inputs) {
-		button = &styles.TiFocusedButton
-	}
-	fmt.Fprintf(&b, "\n\n%s\n\n", *button)
-
-	b.WriteString(styles.TiHelpStyle.Render("cursor mode is "))
-	b.WriteString(styles.TiCursorModeHelpStyle.Render(m.cursorMode.String()))
-	b.WriteString(styles.TiHelpStyle.Render(" (ctrl+r to change style)"))
-
-	return b.String()
-
+	return styles.DocStyle.Render(title + "\n\n\n" + toRender)
 }
 
 func InitiateTaskGroupsList() taskGroupsModel {
