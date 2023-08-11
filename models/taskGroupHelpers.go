@@ -177,3 +177,53 @@ func taskGroupViewState2(m taskGroupsModel, msg tea.KeyMsg) (tea.Model, tea.Cmd,
 	}
 	return m, nil, true
 }
+// -------------- TASKS VIEW STATES -------------------------
+
+func tasksViewState0(m tasksListModel, msg tea.KeyMsg) (tea.Model, tea.Cmd, bool) {
+	switch keypress := msg.String(); keypress {
+	case "a":
+		if !m.isFiltering {
+			m.state = 1
+			cmd := m.updateInputs(msg)
+			m.inputs[0].SetValue("")
+			m.inputs[1].SetValue("")
+			m.inputs[0].Focus()
+			m.focusIndex = 0
+			return m, cmd, false
+		}
+	case "/":
+		if len(m.list.Items()) > 0 {
+			m.isFiltering = true
+		}
+	case "esc":
+		if m.isFiltering {
+			m.isFiltering = false
+		}
+	case "d":
+		index := m.list.Index()
+		m.list.RemoveItem(index)
+		return m, nil, false
+
+	case "e":
+		if !m.isFiltering {
+			selected, ok := m.list.SelectedItem().(types.TaskGroup)
+			if ok {
+				m.selected = selected
+				m.state = 2
+			}
+			cmd := m.updateInputs(msg)
+			m.editInputs[0].SetValue(selected.GroupTitle)
+			m.editInputs[1].SetValue(selected.GroupDescription)
+			m.editInputs[0].Focus()
+			m.editFocusIndex = 0
+			return m, cmd, false
+		}
+	case "enter":
+		parentTaskGroup, ok := m.list.SelectedItem().(types.TaskGroup)
+		if ok {
+			return initiateTasksListModel(parentTaskGroup, m), nil, false
+		}
+	}
+	return m, nil, true
+
+}

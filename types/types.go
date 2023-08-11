@@ -27,4 +27,4 @@ func (g TaskGroup) Description() string { return g.GroupDescription }
 
 func (t Task) FilterValue() string { return t.TaskTitle }
 func (g Task) Title() string       { return g.TaskTitle }
-func (g Task) Description() string { return strconv.FormatBool(g.IsDone) }
+func (g Task) Done() string { return strconv.FormatBool(g.IsDone) }
