@@ -1,6 +1,8 @@
 package models
 
 import (
+	"strconv"
+
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/google/uuid"
@@ -179,16 +181,19 @@ func taskGroupViewState2(m taskGroupsModel, msg tea.KeyMsg) (tea.Model, tea.Cmd,
 }
 // -------------- TASKS VIEW STATES -------------------------
 
-func tasksViewState0(m tasksListModel, msg tea.KeyMsg) (tea.Model, tea.Cmd, bool) {
+func taskListViewState0(m tasksListModel, msg tea.KeyMsg) (tea.Model, tea.Cmd, bool) {
 	switch keypress := msg.String(); keypress {
 	case "a":
 		if !m.isFiltering {
 			m.state = 1
 			cmd := m.updateInputs(msg)
-			m.inputs[0].SetValue("")
-			m.inputs[1].SetValue("")
+			m.inputs[0].SetValue("") // out of Range error
 			m.inputs[0].Focus()
 			m.focusIndex = 0
+			switch keypress := msg.String(); keypress {
+			case "enter":
+				m.done = !m.done
+			}
 			return m, cmd, false
 		}
 	case "/":
@@ -206,14 +211,15 @@ func tasksViewState0(m tasksListModel, msg tea.KeyMsg) (tea.Model, tea.Cmd, bool
 
 	case "e":
 		if !m.isFiltering {
-			selected, ok := m.list.SelectedItem().(types.TaskGroup)
+			selected, ok := m.list.SelectedItem().(types.Task)
 			if ok {
 				m.selected = selected
 				m.state = 2
 			}
 			cmd := m.updateInputs(msg)
-			m.editInputs[0].SetValue(selected.GroupTitle)
-			m.editInputs[1].SetValue(selected.GroupDescription)
+			m.editInputs[0].SetValue(selected.Title())
+			newValue := m.convertDone(selected.IsDone)
+			m.editInputs[1].SetValue(newValue)
 			m.editInputs[0].Focus()
 			m.editFocusIndex = 0
 			return m, cmd, false
@@ -226,4 +232,8 @@ func tasksViewState0(m tasksListModel, msg tea.KeyMsg) (tea.Model, tea.Cmd, bool
 	}
 	return m, nil, true
 
+}
+
+func (m tasksListModel) convertDone(b bool) string {
+	return strconv.FormatBool(b)	
 }
